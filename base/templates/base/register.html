@@ -1,0 +1,35 @@
+{% extends 'main.html' %}
+
+
+{% block titile %}
+Register
+{% endblock titile %}
+
+
+{% block content %}
+
+<div>
+    <form method="POST" >
+        {% csrf_token %}
+
+        {% for field in form %}
+            <label>{{field.label}}</label>
+                {{field}}
+            
+        
+        {% endfor %}
+
+        <button> Register </button>
+    </form>
+</div>
+<div style="color: red;" >
+    {% for error in form.errors %}
+        {{error}}
+    {% endfor %}
+</div>
+<div style="color: red;" >
+    {% if form.non_field_errors %}
+        {{form.non_field_errors}}
+    {% endif %}
+<div>
+{% endblock content %}

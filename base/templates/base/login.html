@@ -1,0 +1,38 @@
+{% extends 'main.html' %}
+
+{% block title %}
+Login
+{% endblock title %}
+
+
+
+{% block content %}
+
+
+
+<div  class="login" >
+    <form method='POST' >
+        {% csrf_token %}
+
+        <label> Username </label>
+        <input type="text" name="username" >
+
+        <label>Password</label>
+        <input type="password"  name="password" >
+
+        <button> Login </button>
+
+        {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li>
+            {{ message }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    </form>
+</div>
+
+
+{% endblock content %}

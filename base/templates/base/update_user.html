@@ -1,0 +1,23 @@
+{% extends 'main.html' %}
+
+{% block title %}
+Update user 
+{% endblock title %}
+
+{% block content %}
+
+<img src="{{user.avatar.url}}" >
+
+<form>
+
+    <label> Avatar </label>
+    <input type='file' name='avatar' accept='image/*' >
+    <label> Username </label>
+    <input type='text' name='username' value='{{user.username}}' >
+    <label> Bio </label>
+    <textarea name='bio' ></textarea>
+
+    <button> Submit </button>
+</form>
+
+{% endblock content %}

@@ -1,0 +1,32 @@
+
+.navbar{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #243ac8;
+}
+
+.navbar li{
+    float: left;
+    margin: 10px;
+}
+
+.navbar li a{
+    color: white;
+}
+
+
+
+.login{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 2px solid black;
+}
