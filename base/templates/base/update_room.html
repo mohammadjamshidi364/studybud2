@@ -1,0 +1,27 @@
+{% extends 'main.html' %}
+
+{% block title %}
+Update Room
+{% endblock title %}
+
+
+{% block content %}
+
+<form method="POST" >
+    {% csrf_token %}
+    
+    <label> Topic </label>
+    <input type="text" name="topic" value="{{room.topic}}" >
+    <br>
+    <label> Name </label>
+    <input type="text" name="name" value="{{room.name}}" >
+    <br>
+    <label> Description </label>
+    <textarea name="description" > {{room.description}} </textarea>
+    <br>
+
+    <button> Edit </button>
+
+</form>
+
+{% endblock content %}

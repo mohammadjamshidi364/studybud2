@@ -1,0 +1,19 @@
+{% extends 'main.html' %}
+
+{% block titile %}
+Room
+{% endblock titile %}
+
+
+{% block content %}
+
+<small> @{{room.host}} </small>
+<br>
+<h3>{{room.name}}</h3>
+<br>
+<h5> {{room.topic}} </h5>
+<br>
+<p>{{room.description}}</p>
+<br>
+
+{% endblock content %}

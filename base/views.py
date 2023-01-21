@@ -1,9 +1,10 @@
 from django.shortcuts import render , redirect
 from django.contrib.auth import login , logout , authenticate
 from django.contrib import messages
+from django.http import HttpResponse
 
 from .forms import RegisterForm , UpdateUser
-from .models import User
+from .models import *
 
 
 
@@ -64,6 +65,71 @@ def updateUser(request):
 
 
 def home(request):
+    rooms = Room.objects.all()
+    
+    context = {'rooms':rooms}
+    return render(request , 'base/home.html', context )
+
+
+def room(request , pk):
+    
+    room = Room.objects.get(id=pk)
+    context = {'room':room}
+    return render(request , 'base/room.html' , context)
+
+
+def createRoom(request):
+    if request.method == 'POST':
+        topic = request.POST.get('topic')
+        topic_name, create = Topics.objects.get_or_create(name=topic)
+        name = request.POST.get('name')
+        description = request.POST.get('description')
     
     
-    return render(request , 'base/home.html')
+        room = Room.objects.create(
+            host = request.user,
+            topic = topic_name,
+            name = name , 
+            description = description,
+        )
+        
+        return redirect('home')
+    context = {}
+    return render(request , 'base/create_room.html' , context)
+
+
+def updateRoom(request , pk):
+    room = Room.objects.get(id=pk)
+    
+    if request.user != room.host:
+        return HttpResponse('You are not allowed here!!!')
+    if request.method == "POST":
+        
+        topic = request.POST.get("topic")
+        topic_name , create = Topics.objects.get_or_create(name=topic)
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        
+        room.topic = topic_name
+        room.name = name
+        room.description = description
+        room.save()
+        
+        return redirect('home')
+    
+    context = {"room":room}
+    return render(request , 'base/update_room.html', context)
+
+
+def deleteRoom(request , pk):
+    room = Room.objects.get(id=pk)
+    
+    if request.user != room.host:
+        return HttpResponse('You are not allowed here!!!')
+
+    if request.method == 'POST':
+        room.delete()
+        return redirect('home')
+    
+    context = {'room':room}
+    return render(request , 'base/delete_room.html', context)
