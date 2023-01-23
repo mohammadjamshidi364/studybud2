@@ -6,14 +6,36 @@ Room
 
 
 {% block content %}
+<div>
+    <small> @{{room.host}} </small>
+    <br>
+    <h3>{{room.name}}</h3>
+    <br>
+    <h5> {{room.topic}} </h5>
+    <br>
+    <p>{{room.description}}</p>
+    <br>
+</div>
 
-<small> @{{room.host}} </small>
-<br>
-<h3>{{room.name}}</h3>
-<br>
-<h5> {{room.topic}} </h5>
-<br>
-<p>{{room.description}}</p>
-<br>
+<div>
+    {% for message in messages %}
+
+        <small> @{{message.user}} </small>
+        <br>
+        <p> {{message.body}} {{message.created|timesince}} </p>
+        <hr>
+    
+    {% endfor %}
+</div>
+
+<div>
+    <form method="POST" >
+        {% csrf_token %}
+
+        <input type="text" name="message" placeholder="Send a message" >
+
+        <button> Send </button>
+    </form>
+</div>
 
 {% endblock content %}

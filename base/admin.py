@@ -9,3 +9,4 @@ class UserAccount(UserAdmin):
 admin.site.register(User , UserAccount)
 admin.site.register(Topics)
 admin.site.register(Room)
+admin.site.register(Message)

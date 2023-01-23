@@ -1,7 +1,9 @@
 from django.shortcuts import render , redirect
 from django.contrib.auth import login , logout , authenticate
 from django.contrib import messages
+from django.db.models import Q
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 
 from .forms import RegisterForm , UpdateUser
 from .models import *
@@ -21,6 +23,7 @@ def registerPage(request):
             user = form.save()
             login(request , user)
             return redirect('home')
+        
     context = {'form': form}
     return render(request , 'base/register.html' , context)
 
@@ -48,6 +51,7 @@ def loginPage(request):
         if authenticate_user is not None:
             login(request , authenticate_user)
             return redirect('home')
+        
     return render(request , 'base/login.html')
 
 def LogoutPage(request):
@@ -65,20 +69,39 @@ def updateUser(request):
 
 
 def home(request):
-    rooms = Room.objects.all()
+    q = request.GET.get('q') if request.GET.get('q') != None else ""
     
-    context = {'rooms':rooms}
+    rooms = Room.objects.filter(Q(topic__name__icontains=q) | 
+                                Q(name__icontains=q) |
+                                Q(description__icontains=q) |
+                                Q(host__username__icontains=q)
+                                )
+    topics = Topics.objects.all()[0:5]
+    room_count = rooms.count()
+    
+    context = {'rooms':rooms , 'topics':topics , 'room_count':room_count}
     return render(request , 'base/home.html', context )
 
 
 def room(request , pk):
-    
     room = Room.objects.get(id=pk)
-    context = {'room':room}
+    room_messages = room.message_set.all().order_by("-created")
+    
+    if request.method == "POST":
+        body = request.POST.get('message')
+        message = Message.objects.create(
+            user = request.user,
+            room = room,
+            body = body
+        )
+        return redirect('room', pk=room.id)
+    
+    context = {'room':room , 'messages':room_messages}
     return render(request , 'base/room.html' , context)
 
-
+login_required(login_url="login")
 def createRoom(request):
+    topics = Topics.objects.all()
     if request.method == 'POST':
         topic = request.POST.get('topic')
         topic_name, create = Topics.objects.get_or_create(name=topic)
@@ -92,19 +115,19 @@ def createRoom(request):
             name = name , 
             description = description,
         )
-        
         return redirect('home')
-    context = {}
-    return render(request , 'base/create_room.html' , context)
+    context = {'topics':topics}
+    return render(request , 'base/create_room.html', context)
 
-
+login_required(login_url="login")
 def updateRoom(request , pk):
     room = Room.objects.get(id=pk)
+    topics = Topics.objects.all()
     
     if request.user != room.host:
         return HttpResponse('You are not allowed here!!!')
+    
     if request.method == "POST":
-        
         topic = request.POST.get("topic")
         topic_name , create = Topics.objects.get_or_create(name=topic)
         name = request.POST.get('name')
@@ -117,10 +140,10 @@ def updateRoom(request , pk):
         
         return redirect('home')
     
-    context = {"room":room}
+    context = {"room":room , 'topics':topics}
     return render(request , 'base/update_room.html', context)
 
-
+login_required(login_url="login")
 def deleteRoom(request , pk):
     room = Room.objects.get(id=pk)
     
@@ -132,4 +155,4 @@ def deleteRoom(request , pk):
         return redirect('home')
     
     context = {'room':room}
-    return render(request , 'base/delete_room.html', context)
+    return render(request , 'base/delete.html', context)
