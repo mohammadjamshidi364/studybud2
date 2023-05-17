@@ -11,17 +11,6 @@ Update user
 
 <form method="POST" enctype="multipart/form-data" >
     {% csrf_token %}
-{% comment %} 
-    {% for field in form %}
-
-        <label>{{field.label}}</label>
-                {{field}}
-
-    
-    {% endfor %}
-
-    <button> submit </button> {% endcomment %}
-
 
     <label> Avatar </label>
     <input type='file' name='avatar' accept='image/*' >
