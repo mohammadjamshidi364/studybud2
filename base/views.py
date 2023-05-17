@@ -59,12 +59,32 @@ def LogoutPage(request):
     return redirect('home')
 
 def updateUser(request):
-    user = request.user
-    form = UpdateUser(instance=user)
+    
+    if request.user.is_authenticated:
+        
+        user = request.user
+        
+        
+        if request.method == "POST":
+            avatar = request.FILES.get('avatar')
+            username = request.POST.get('username')
+            bio = request.POST.get('bio')
+            if avatar:
+                user.avatar = avatar
+                user.bio = bio
+                user.save()
+                return redirect('home')
+            else:
+                user.bio = bio
+                user.save()
+                return redirect("home")
+                
+            
+    else:
+        return redirect('home')
     
     
-    
-    context = {'form':form , 'user':user}
+    context = {'user':user}
     return render(request , 'base/update_user.html' , context)
 
 
@@ -78,7 +98,7 @@ def home(request):
                                 )
     topics = Topics.objects.all()[0:5]
     room_count = rooms.count()
-    
+
     context = {'rooms':rooms , 'topics':topics , 'room_count':room_count}
     return render(request , 'base/home.html', context )
 

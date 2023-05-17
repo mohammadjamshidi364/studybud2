@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
-    avatar = models.ImageField(null=True , blank=True , default="/static/images/avatar.svg")
+    avatar = models.ImageField(null=True , blank=True , default="/static/media/avatar.svg", upload_to="")
     bio = models.TextField(null=True , blank=True)
     
     def __str__(self):

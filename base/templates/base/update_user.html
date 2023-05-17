@@ -5,19 +5,39 @@ Update user
 {% endblock title %}
 
 {% block content %}
-
+{% if user.avatar %}
 <img src="{{user.avatar.url}}" >
+{% endif %}
 
-<form>
+<form method="POST" enctype="multipart/form-data" >
+    {% csrf_token %}
+{% comment %} 
+    {% for field in form %}
+
+        <label>{{field.label}}</label>
+                {{field}}
+
+    
+    {% endfor %}
+
+    <button> submit </button> {% endcomment %}
+
 
     <label> Avatar </label>
     <input type='file' name='avatar' accept='image/*' >
     <label> Username </label>
     <input type='text' name='username' value='{{user.username}}' >
     <label> Bio </label>
+    {% if user.bio %}
+    <textarea name='bio' >{{user.bio}}</textarea>
+    {% else %}
     <textarea name='bio' ></textarea>
+    {% endif %}
 
-    <button> Submit </button>
+    <button> Submit </button> 
+
+
+
 </form>
 
 {% endblock content %}
